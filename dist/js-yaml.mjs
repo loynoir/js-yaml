@@ -88,35 +88,37 @@ function formatError(exception, compact) {
 }
 
 
-function YAMLException$1(reason, mark) {
-  // Super constructor
-  Error.call(this);
+var YAMLException$1 = /*@__PURE__*/(function _() {
+  function YAMLException(reason, mark) {
+    // Super constructor
+    Error.call(this);
 
-  this.name = 'YAMLException';
-  this.reason = reason;
-  this.mark = mark;
-  this.message = formatError(this, false);
+    this.name = 'YAMLException';
+    this.reason = reason;
+    this.mark = mark;
+    this.message = formatError(this, false);
 
-  // Include stack trace in error object
-  if (Error.captureStackTrace) {
-    // Chrome and NodeJS
-    Error.captureStackTrace(this, this.constructor);
-  } else {
-    // FF, IE 10+ and Safari 6+. Fallback for others
-    this.stack = (new Error()).stack || '';
+    // Include stack trace in error object
+    if (Error.captureStackTrace) {
+      // Chrome and NodeJS
+      Error.captureStackTrace(this, this.constructor);
+    } else {
+      // FF, IE 10+ and Safari 6+. Fallback for others
+      this.stack = (new Error()).stack || '';
+    }
   }
-}
+
+  // Inherit from Error
+  YAMLException.prototype = Object.create(Error.prototype);
+  YAMLException.prototype.constructor = YAMLException;
 
 
-// Inherit from Error
-YAMLException$1.prototype = Object.create(Error.prototype);
-YAMLException$1.prototype.constructor = YAMLException$1;
+  YAMLException.prototype.toString = function toString(compact) {
+    return this.name + ': ' + formatError(this, compact);
+  };
 
-
-YAMLException$1.prototype.toString = function toString(compact) {
-  return this.name + ': ' + formatError(this, compact);
-};
-
+  return YAMLException;
+})();
 
 var exception = YAMLException$1;
 
@@ -399,22 +401,22 @@ Schema$1.prototype.extend = function extend(definition) {
 
 var schema = Schema$1;
 
-var str = new type('tag:yaml.org,2002:str', {
+var str = /*@__PURE__*/new type('tag:yaml.org,2002:str', {
   kind: 'scalar',
   construct: function (data) { return data !== null ? data : ''; }
 });
 
-var seq = new type('tag:yaml.org,2002:seq', {
+var seq = /*@__PURE__*/new type('tag:yaml.org,2002:seq', {
   kind: 'sequence',
   construct: function (data) { return data !== null ? data : []; }
 });
 
-var map = new type('tag:yaml.org,2002:map', {
+var map = /*@__PURE__*/new type('tag:yaml.org,2002:map', {
   kind: 'mapping',
   construct: function (data) { return data !== null ? data : {}; }
 });
 
-var failsafe = new schema({
+var failsafe = /*@__PURE__*/new schema({
   explicit: [
     str,
     seq,
@@ -439,7 +441,7 @@ function isNull(object) {
   return object === null;
 }
 
-var _null = new type('tag:yaml.org,2002:null', {
+var _null = /*@__PURE__*/new type('tag:yaml.org,2002:null', {
   kind: 'scalar',
   resolve: resolveYamlNull,
   construct: constructYamlNull,
@@ -473,7 +475,7 @@ function isBoolean(object) {
   return Object.prototype.toString.call(object) === '[object Boolean]';
 }
 
-var bool = new type('tag:yaml.org,2002:bool', {
+var bool = /*@__PURE__*/new type('tag:yaml.org,2002:bool', {
   kind: 'scalar',
   resolve: resolveYamlBoolean,
   construct: constructYamlBoolean,
@@ -617,7 +619,7 @@ function isInteger(object) {
          (object % 1 === 0 && !common.isNegativeZero(object));
 }
 
-var int = new type('tag:yaml.org,2002:int', {
+var int = /*@__PURE__*/new type('tag:yaml.org,2002:int', {
   kind: 'scalar',
   resolve: resolveYamlInteger,
   construct: constructYamlInteger,
@@ -722,7 +724,7 @@ function isFloat(object) {
          (object % 1 !== 0 || common.isNegativeZero(object));
 }
 
-var float = new type('tag:yaml.org,2002:float', {
+var float = /*@__PURE__*/new type('tag:yaml.org,2002:float', {
   kind: 'scalar',
   resolve: resolveYamlFloat,
   construct: constructYamlFloat,
@@ -731,7 +733,7 @@ var float = new type('tag:yaml.org,2002:float', {
   defaultStyle: 'lowercase'
 });
 
-var json = failsafe.extend({
+var json = /*@__PURE__*/failsafe.extend({
   implicit: [
     _null,
     bool,
@@ -819,7 +821,7 @@ function representYamlTimestamp(object /*, style*/) {
   return object.toISOString();
 }
 
-var timestamp = new type('tag:yaml.org,2002:timestamp', {
+var timestamp = /*@__PURE__*/new type('tag:yaml.org,2002:timestamp', {
   kind: 'scalar',
   resolve: resolveYamlTimestamp,
   construct: constructYamlTimestamp,
@@ -831,7 +833,7 @@ function resolveYamlMerge(data) {
   return data === '<<' || data === null;
 }
 
-var merge = new type('tag:yaml.org,2002:merge', {
+var merge = /*@__PURE__*/new type('tag:yaml.org,2002:merge', {
   kind: 'scalar',
   resolve: resolveYamlMerge
 });
@@ -952,7 +954,7 @@ function isBinary(obj) {
   return Object.prototype.toString.call(obj) ===  '[object Uint8Array]';
 }
 
-var binary = new type('tag:yaml.org,2002:binary', {
+var binary = /*@__PURE__*/new type('tag:yaml.org,2002:binary', {
   kind: 'scalar',
   resolve: resolveYamlBinary,
   construct: constructYamlBinary,
@@ -995,7 +997,7 @@ function constructYamlOmap(data) {
   return data !== null ? data : [];
 }
 
-var omap = new type('tag:yaml.org,2002:omap', {
+var omap = /*@__PURE__*/new type('tag:yaml.org,2002:omap', {
   kind: 'sequence',
   resolve: resolveYamlOmap,
   construct: constructYamlOmap
@@ -1045,7 +1047,7 @@ function constructYamlPairs(data) {
   return result;
 }
 
-var pairs = new type('tag:yaml.org,2002:pairs', {
+var pairs = /*@__PURE__*/new type('tag:yaml.org,2002:pairs', {
   kind: 'sequence',
   resolve: resolveYamlPairs,
   construct: constructYamlPairs
@@ -1071,13 +1073,13 @@ function constructYamlSet(data) {
   return data !== null ? data : {};
 }
 
-var set = new type('tag:yaml.org,2002:set', {
+var set = /*@__PURE__*/new type('tag:yaml.org,2002:set', {
   kind: 'mapping',
   resolve: resolveYamlSet,
   construct: constructYamlSet
 });
 
-var _default = core.extend({
+var _default = /*@__PURE__*/core.extend({
   implicit: [
     timestamp,
     merge
@@ -1210,12 +1212,23 @@ function charFromCodepoint(c) {
   );
 }
 
-var simpleEscapeCheck = new Array(256); // integer, for fast access
-var simpleEscapeMap = new Array(256);
-for (var i = 0; i < 256; i++) {
-  simpleEscapeCheck[i] = simpleEscapeSequence(i) ? 1 : 0;
-  simpleEscapeMap[i] = simpleEscapeSequence(i);
-}
+
+var _simpleEscape = /*@__PURE__*/(function _() {
+  var simpleEscapeCheck = new Array(256); // integer, for fast access
+  var simpleEscapeMap = new Array(256);
+  for (var i = 0; i < 256; i++) {
+    simpleEscapeCheck[i] = simpleEscapeSequence(i) ? 1 : 0;
+    simpleEscapeMap[i] = simpleEscapeSequence(i);
+  }
+
+  return {
+    simpleEscapeCheck: simpleEscapeCheck,
+    simpleEscapeMap: simpleEscapeMap
+  };
+})();
+
+var simpleEscapeCheck = _simpleEscape.simpleEscapeCheck;
+var simpleEscapeMap =  _simpleEscape.simpleEscapeMap;
 
 
 function State$1(input, options) {
@@ -3830,7 +3843,7 @@ var safeLoad            = renamed('safeLoad', 'load');
 var safeLoadAll         = renamed('safeLoadAll', 'loadAll');
 var safeDump            = renamed('safeDump', 'dump');
 
-var jsYaml = {
+var y = {
 	Type: Type,
 	Schema: Schema,
 	FAILSAFE_SCHEMA: FAILSAFE_SCHEMA,
@@ -3847,5 +3860,4 @@ var jsYaml = {
 	safeDump: safeDump
 };
 
-export default jsYaml;
-export { CORE_SCHEMA, DEFAULT_SCHEMA, FAILSAFE_SCHEMA, JSON_SCHEMA, Schema, Type, YAMLException, dump, load, loadAll, safeDump, safeLoad, safeLoadAll, types };
+export { CORE_SCHEMA, DEFAULT_SCHEMA, FAILSAFE_SCHEMA, JSON_SCHEMA, Schema, Type, YAMLException, y as default, dump, load, loadAll, safeDump, safeLoad, safeLoadAll, types };
